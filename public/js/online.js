@@ -10,6 +10,7 @@ $(document).ready(function() {
   var oldGrammar        = null;
   var oldParserVar      = null;
   var oldOptionCache    = null;
+  var oldOptionTrace    = null;
   var oldOptionOptimize = null;
   var oldInput          = null;
 
@@ -38,6 +39,7 @@ $(document).ready(function() {
     oldGrammar        = getGrammar();
     oldParserVar      = $("#parser-var").val();
     oldOptionCache    = $("#option-cache").is(":checked");
+    oldOptionTrace    = $("#option-trace").is(":checked");
     oldOptionOptimize = $("#option-optimize").val();
 
     $('#build-message').attr("class", "message progress").text("Building the parser...");
@@ -46,6 +48,7 @@ $(document).ready(function() {
     $("#output").addClass("disabled").text("Output not available.");
     $("#parser-var").attr("disabled", "disabled");
     $("#option-cache").attr("disabled", "disabled");
+    $("#option-trace").attr("disabled", "disabled");
     $("#option-optimize").attr("disabled", "disabled");
     $("#parser-download").attr("disabled", "disabled");
 
@@ -53,6 +56,7 @@ $(document).ready(function() {
       var timeBefore = (new Date).getTime();
       var parserSource = peg.generate(getGrammar(), {
         cache:    $("#option-cache").is(":checked"),
+        trace:    $("#option-trace").is(":checked"),
         optimize: $("#option-optimize").val(),
         output:   "source"
       });
@@ -72,6 +76,7 @@ $(document).ready(function() {
       $("#parser-source").val($("#parser-var").val() + " = " + parserSource + ";\n");
       $("#parser-var").removeAttr("disabled");
       $("#option-cache").removeAttr("disabled");
+      $("#option-trace").removeAttr("disabled");
       $("#option-optimize").removeAttr("disabled");
       $("#parser-download").removeAttr("disabled");
 
@@ -127,6 +132,7 @@ $(document).ready(function() {
     var nothingChanged = getGrammar() === oldGrammar
       && $("#parser-var").val() === oldParserVar
       && $("#option-cache").is(":checked") === oldOptionCache
+      && $("#option-trace").is(":checked") === oldOptionTrace
       && $("#option-optimize").val() === oldOptionOptimize;
     if (nothingChanged) { return; }
 
@@ -182,7 +188,7 @@ $(document).ready(function() {
 
   editor.on("change", scheduleBuildAndParse);
 
-  $("#parser-var, #option-cache, #option-optimize")
+  $("#parser-var, #option-cache, #option-trace, #option-optimize")
     .change(scheduleBuildAndParse)
     .mousedown(scheduleBuildAndParse)
     .mouseup(scheduleBuildAndParse)
@@ -206,7 +212,7 @@ $(document).ready(function() {
   $("#loader").hide();
   $("#content").show();
 
-  $("#grammar, #parser-var, #option-cache, #option-optimize").removeAttr("disabled");
+  $("#grammar, #parser-var, #option-cache, #option-trace, #option-optimize").removeAttr("disabled");
   
   buildAndParse();
 
